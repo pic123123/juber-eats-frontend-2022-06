@@ -3,6 +3,7 @@ import { isLoggedInVar } from "../apollo";
 
 function LoggedOutRouter() {
   const onClick = () => {
+    //console.log(isLoggedInVar());
     isLoggedInVar(true);
   };
   return (
