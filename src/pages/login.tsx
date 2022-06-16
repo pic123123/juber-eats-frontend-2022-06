@@ -1,9 +1,24 @@
+import { ApolloError, gql, useMutation } from "@apollo/client";
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import { isLoggedInVar } from "../apollo";
 import { REGEX_EMAIL, REGEX_PASSWORD } from "../common/common.constatns";
 import { FormErorr } from "../components/form-error";
+import {
+  loginMutationInput,
+  loginMutationOutput,
+} from "../interfaces/auth.interface";
+
+const LOGIN_MUTATION = gql`
+  mutation loginMutation($loginInput: LoginInput!) {
+    login(input: $loginInput) {
+      ok
+      token
+      error
+    }
+  }
+`;
 
 interface ILoginForm {
   email: string;
@@ -18,8 +33,34 @@ function Login() {
     formState: { errors },
   } = useForm<ILoginForm>();
 
+  const onCompleted = (loginMutationResult: loginMutationOutput) => {
+    console.log("completed");
+    const {
+      loginOutput: { ok, error, token },
+    } = loginMutationResult;
+    if (ok) {
+      console.log(token);
+    }
+  };
+  const onError = (error: ApolloError) => {
+    console.log(`--------on error ${error}`);
+  };
+  const [loginMutation, { loading, error, data: loginMutationResult }] =
+    useMutation<loginMutationOutput, loginMutationInput>(LOGIN_MUTATION, {
+      onCompleted,
+      onError,
+    });
+
   const onSubmit: SubmitHandler<ILoginForm> = () => {
-    console.log(getValues());
+    const { email, password } = getValues();
+    loginMutation({
+      variables: {
+        loginInput: {
+          email,
+          password,
+        },
+      },
+    });
     // isLoggedInVar(true);
   };
   return (
@@ -85,6 +126,9 @@ function Login() {
           <button type="submit" className="btn mt-3">
             로그인
           </button>
+          {loginMutationResult?.loginOutput.error && (
+            <FormErorr errorMessage={loginMutationResult?.loginOutput.error} />
+          )}
         </form>
       </div>
     </div>
