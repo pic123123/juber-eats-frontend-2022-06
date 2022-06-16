@@ -3,6 +3,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 
 import { isLoggedInVar } from "../apollo";
 import { REGEX_EMAIL, REGEX_PASSWORD } from "../common/common.constatns";
+import { FormErorr } from "../components/form-error";
 
 interface ILoginForm {
   email: string;
@@ -40,19 +41,19 @@ function Login() {
             className="input mb-3"
           />
           {errors.email?.message && (
-            <span className="font-medium text-red-500 ">
-              {errors.email?.message}
-            </span>
+            <FormErorr errorMessage={errors.email?.message} />
           )}
           {errors.email?.type === "maxLength" && (
-            <span className="font-medium text-red-500 ">
-              이메일 주소는 100자 이하로 입력해 주시기 바랍니다.
-            </span>
+            <FormErorr
+              errorMessage={
+                "이메일 주소는 100자 이하로 입력해 주시기 바랍니다."
+              }
+            />
           )}
           {errors.email?.type === "pattern" && (
-            <span className="font-medium text-red-500 ">
-              이메일 주소 형식에 맞게 입력해 주시기 바랍니다.
-            </span>
+            <FormErorr
+              errorMessage={"이메일 주소 형식에 맞게 입력해 주시기 바랍니다."}
+            />
           )}
           <input
             type="password"
@@ -65,19 +66,21 @@ function Login() {
             className="input"
           />
           {errors.password?.message && (
-            <span className="font-medium text-red-500 ">
-              {errors.password?.message}
-            </span>
+            <FormErorr errorMessage={errors.password?.message} />
           )}
           {errors.password?.type === "minLength" && (
-            <span className="font-medium text-red-500 ">
-              비밀번호는 8자 이상 영어+숫자+특수문자를 조합해 주시기 바랍니다.
-            </span>
+            <FormErorr
+              errorMessage={
+                "비밀번호는 8자 이상 영어+숫자+특수문자를 조합해 주시기 바랍니다."
+              }
+            />
           )}
           {errors.password?.type === "pattern" && (
-            <span className="font-medium text-red-500 ">
-              비밀번호는 8자 이상 영어+숫자+특수문자를 조합해 주시기 바랍니다.
-            </span>
+            <FormErorr
+              errorMessage={
+                "비밀번호는 8자 이상 영어+숫자+특수문자를 조합해 주시기 바랍니다."
+              }
+            />
           )}
           <button type="submit" className="btn mt-3">
             로그인
